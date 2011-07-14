@@ -4,6 +4,7 @@ class EcommerceProductTag extends DataObject {
 
 	public static $db = array(
 		"Title" => "Varchar(100)",
+		"Explanation" => "Varchar(255)",
 		"Code" => "Varchar(30)"
 	);
 
