@@ -15,18 +15,20 @@ class EcommerceProductTag extends DataObject {
 
 	public static $many_many = array(
 		"Products" => "Product"
-	); 
+	);
 
-	public static $casting = array("TinyIcon" => "HTMLText"); //adds computed fields that can also have a type (e.g. 
+	public static $casting = array(
+		"TinyIcon" => "HTMLText"
+	); //adds computed fields that can also have a type (e.g.
 
 	public static $searchable_fields = array(
 		"Title" => "PartialMatchFilter",
 		"Code" => "PartialMatchFilter"
 	);
-	
+
 	public static $field_labels = array();
-	
-	public static $summary_fields = array("Title" => "Name", "TinyIcon" => "Icon"); 
+
+	public static $summary_fields = array("Title" => "Name", "TinyIcon" => "Icon");
 
 	public static $singular_name = "Product Tag";
 
@@ -40,9 +42,10 @@ class EcommerceProductTag extends DataObject {
 		parent::populateDefaults();
 	}
 
-	public function TinyIcon() {
+	public function TinyIcon() {return $this->getTinyIcon();}
+	public function getTinyIcon() {
 		return $this->Icon()->CroppedImage(32,32);
-	} 
+	}
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -55,7 +58,7 @@ class EcommerceProductTag extends DataObject {
 		}
 		return $fields;
 	}
-	
+
 
 	public function onBeforeWrite(){
 		parent::onBeforeWrite();
