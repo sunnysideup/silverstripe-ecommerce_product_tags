@@ -34,7 +34,9 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 					$obj->Title = $name;
 					$obj->Code = $name;
 					$obj->write;
-					$obj->Products()->add($obj);
+					//TO DO - does not work!!!
+					$obj->Products()->add($this->owner);
+					$this->owner->EcommerceProductTags()->add($obj);
 					$obj->write();
 				}
 			}
