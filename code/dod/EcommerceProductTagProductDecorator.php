@@ -28,8 +28,10 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 	protected $newTag = null;
 
 	function onAfterWrite(){
-		$this->newTag->Products()->add($this->owner);
-		$this->owner->EcommerceProductTags()->add($this->newTag);
+		if($this->newTag) {
+			$this->newTag->Product()->add($this->owner);
+			$this->owner->EcommerceProductTags()->add($this->newTag);
+		}
 	}
 
 	function onBeforeWrite() {
