@@ -25,19 +25,24 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 		}
 	}
 
+	protected $newTag = null;
+
+	function onAfterWrite(){
+		$this->newTag->Products()->add($this->owner);
+		$this->owner->EcommerceProductTags()->add($this->newTag);
+	}
+
 	function onBeforeWrite() {
 		if(isset($_REQUEST["AddATag"])) {
 			$name = Convert::raw2sql($_REQUEST["AddATag"]);
 			if($name) {
-				if(!DataObject::get_one("EcommerceProductTag", "\"Title\" = '$name' OR \"Code\" = '$name'")) {
-					$obj = new EcommerceProductTag();
-					$obj->Title = $name;
-					$obj->Code = $name;
-					$obj->write;
+				$this->newTag = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$name' OR \"Code\" = '$name'");
+				if(!$this->newTag) {
+					$this->newTag = new EcommerceProductTag();
+					$this->newTag->Title = $name;
+					$this->newTag->Code = $name;
+					$this->newTag->write();
 					//TO DO - does not work!!!
-					$obj->Products()->add($this->owner);
-					$this->owner->EcommerceProductTags()->add($obj);
-					$obj->write();
 				}
 			}
 		}
