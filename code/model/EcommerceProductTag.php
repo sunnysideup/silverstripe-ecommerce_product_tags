@@ -18,7 +18,8 @@ class EcommerceProductTag extends DataObject {
 	);
 
 	public static $casting = array(
-		"TinyIcon" => "HTMLText"
+		"TinyIcon" => "HTMLText",
+		"Link" => "Varchar"
 	); //adds computed fields that can also have a type (e.g.
 
 	public static $searchable_fields = array(
@@ -45,6 +46,14 @@ class EcommerceProductTag extends DataObject {
 	public function TinyIcon() {return $this->getTinyIcon();}
 	public function getTinyIcon() {
 		return $this->Icon()->CroppedImage(32,32);
+	}
+
+	public function Link() {return $this->getLink();}
+	public function getLink() {
+		$page = DataObject::get_one("ProductGroupWithTags");
+		if($page) {
+			return $page->Link("show")."/".$this->Code."/";
+		}
 	}
 
 	public function getCMSFields() {
@@ -77,7 +86,10 @@ class EcommerceProductTag extends DataObject {
 		}
 	}
 
-
+	static function get_by_code($code) {
+		$code = Convert::raw2sql($code);
+		return DataObject::get("EcommerceProductTag", "\"Code\" = '$code'");
+	}
 
 
 }

@@ -1,14 +1,10 @@
 <% if EcommerceProductTags %>
 <div id="EcommerceProductTags">
 	<h3><% _t("ATTRIBUTES", "Attributes") %></h3>
-	<ul>
+	<ul class="tagList">
 		<% control EcommerceProductTags %>
 		<li class="$OddEven $FirstLast">
-			<a <% if ExplanationPage %> href="$ExplanationPage.Link" <% end_if %> title="$Title.ATT - $Explanation.ATT">
-				$Icon.SetSize(32, 32)
-				<em>$Title</em>
-				<span>$Explanation</span>
-			</a>
+			<% include EcommerceProductTagItem %>
 		</li><% end_control %>
 	</ul>
 </div>
