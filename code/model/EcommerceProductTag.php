@@ -65,9 +65,18 @@ class EcommerceProductTag extends DataObject {
 				$fields->replaceField("Products", new CheckboxSetField("Products", "Applies to ...", $dosArray));
 			}
 		}
+		if($this->ID) {
+			$dos = DataObject::get("EcommerceProductTag", "EcommerceProductTag.ID <> ".$this->ID);
+			if($dos) {
+				$dosArray = $dos->toDropDownMap("ID", "Name", "-- do not merge --");
+				$fields->addFieldToTab("Root.Merge", new DropdownField("MergeID", "Merge <i>$this->Name</i> into:", $dosArray));
+			}
+		}
 		return $fields;
 	}
 
+
+	protected $mergeInto = null;
 
 	public function onBeforeWrite(){
 		parent::onBeforeWrite();
@@ -84,11 +93,38 @@ class EcommerceProductTag extends DataObject {
 			$i++;
 			$this->Code = $startCode."_".$i;
 		}
+		if(isset($_REQUEST["MergeID"])) {
+			$mergeID = intval($_REQUEST["MergeID"]);
+			if($mergeID) {
+				$this->mergeInto = DataObject::get_by_id("EcommerceProductTag", $mergeID);
+			}
+		}
 	}
+
+
+
+	function onAfterWrite(){
+		parent::onAfterWrite();
+		if($this->mergeInto) {
+			DB::query("UPDATE \"EcommerceProductTag_Products\" SET \"EcommerceProductTagID\" = ".$this->mergeInto->ID." WHERE \"EcommerceProductTagID\"  = ".$this->ID);
+			$this->delete();
+		}
+		if(isset($_REQUEST["MergeID"])) {
+			unset($_REQUEST["MergeID"]);
+		}
+		$this->mergeInto = null;
+	}
+
 
 	static function get_by_code($code) {
 		$code = Convert::raw2sql($code);
 		return DataObject::get("EcommerceProductTag", "\"Code\" = '$code'");
+	}
+
+
+
+	function onBeforeWrite() {
+		parent::onBeforeWrite();
 	}
 
 

@@ -32,6 +32,10 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 			$this->newTag->Product()->add($this->owner);
 			$this->owner->EcommerceProductTags()->add($this->newTag);
 		}
+		if(isset($_REQUEST["AddATag"])) {
+			unset($_REQUEST["AddATag"]);
+		}
+		$this->newTag = null;
 	}
 
 	function onBeforeWrite() {
