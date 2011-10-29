@@ -121,13 +121,6 @@ class EcommerceProductTag extends DataObject {
 		return DataObject::get("EcommerceProductTag", "\"Code\" = '$code'");
 	}
 
-
-
-	function onBeforeWrite() {
-		parent::onBeforeWrite();
-	}
-
-
 }
 
 
