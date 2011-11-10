@@ -187,6 +187,22 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		return array();
 	}
 
+	function Title() {
+		$v = $this->Title;
+		if($this->tag) {
+			$v .= " - ".$this->tag->Title;
+		}
+		return $v;
+	}
+
+	function MetaTitle() {
+		$v = $this->MetaTitle;
+		if($this->tag) {
+			$v .= " - ".$this->tag->Title;
+		}
+		return $v;
+	}
+
 	function Tags() {
 		$dos = DataObject::get("EcommerceProductTag");
 		if($dos) {

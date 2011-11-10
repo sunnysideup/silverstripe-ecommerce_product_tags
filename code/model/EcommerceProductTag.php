@@ -118,7 +118,7 @@ class EcommerceProductTag extends DataObject {
 
 	static function get_by_code($code) {
 		$code = Convert::raw2sql($code);
-		return DataObject::get("EcommerceProductTag", "\"Code\" = '$code'");
+		return DataObject::get_one("EcommerceProductTag", "\"Code\" = '$code'");
 	}
 
 }
