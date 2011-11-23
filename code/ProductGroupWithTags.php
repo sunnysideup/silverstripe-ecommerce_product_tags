@@ -7,14 +7,10 @@
  *
  **/
 
-class ProductGroupWithTags extends Page {
+class ProductGroupWithTags extends ProductGroup {
 
-	public static $db = array(
-		"DefaultSortOrder" => "Varchar(50)",
-	);
-
-	public static $belongs_many_many = array(
-		'Products' => 'Product'
+	public static $many_many = array(
+		"EcommerceProductTags" => "EcommerceProductTag"
 	);
 
 	public static $defaults = array(
@@ -22,56 +18,29 @@ class ProductGroupWithTags extends Page {
 	);
 
 	//public static $allowed_children = "none";
+	public static $default_child = 'Page';
 
+	/**
+	 * standard SS variable
+	 */
 	public static $icon = 'ecommerce/ecommerce_product_tags/icons/ProductGroupWithTags';
 
-	function canCreate($member = null) {
-		return !DataObject::get_one("ProductGroupWithTags", "\"ClassName\" = 'ProductGroupWithTags'");
-	}
-
-	protected static $sort_options = array(
-			'title' => array("Title" => 'Alphabetical', "SQL" => "\"Title\" ASC"),
-			'price' => array("Title" => 'Lowest Price', "SQL" => "\"Price\" ASC, \"Title\" ASC"),
-		);
-		static function add_sort_option($key, $title, $sql){self::$sort_options[$key] = array("Title" => $title, "SQL" => $sql);}
-		static function remove_sort_option($key){unset(self::$sort_options[$key]);}
-		static function set_sort_options(array $a){self::$sort_options = $a;}
-		static function get_sort_options(){return self::$sort_options;}
-		//NON-STATIC
-		protected function getSortOptionsForDropdown(){
-			$array = array();
-			if(is_array(self::$sort_options) && count(self::$sort_options)) {
-				foreach(self::$sort_options as $key => $sort_option) {
-					$array[$key] = $sort_option["Title"];
-				}
-			}
-			return $array;
-		}
-		protected function getSortOptionSQL($key = ""){ // NOT STATIC
-			if($key && isset(self::$sort_options[$key])) {
-				return self::$sort_options[$key]["SQL"];
-			}
-			elseif(is_array(self::$sort_options) && count(self::$sort_options)) {
-				$firstItem = array_shift(self::$sort_options);
-				return $firstItem["SQL"];
-			}
-			else {
-				return "\"Sort\" ASC";
-			}
-		}
-
-	protected $standardFilter = " AND \"ShowInSearch\" = 1";
-	public function getStandardFilter(){return $this->standardFilter;}
-
+	/**
+	 * standard SS method
+	 */
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
-		$fields->addFieldToTab(
-			'Root.Content',
-			new Tab(
-				'Products',
-				new DropdownField("DefaultSortOrder", _t("ProductGroup.DEFAULTSORTORDER", "Default Sort Order"), $this->getSortOptionsForDropdown())
-			)
-		);
+		$fields->removeByName("LevelOfProductsToShow");
+		$dos = DataObject::get("EcommerceProductTag");
+		if($dos) {
+			$dosArray = $dos->toDropDownMap();
+			$fields->addFieldsToTab(
+				"Root.Content.Tags",
+				array(
+					new CheckboxSetField("EcommerceProductTags", "Select Relevant Tags", $dosArray)
+				)
+			);
+		}
 		return $fields;
 	}
 
@@ -150,18 +119,16 @@ class ProductGroupWithTags extends Page {
 		}
 		return null;
 	}
-	function MyDefaultSortOrder() {
-		$defaultSortOrder = "";
-		if($this->DefaultSortOrder) {
-			$defaultSortOrder = $this->DefaultSortOrder;
-		}
-		return $defaultSortOrder;
+
+	function ChildGroups() {
+		return null;
 	}
 
 }
+
 class ProductGroupWithTags_Controller extends Page_Controller {
 
-	protected $tag;
+	protected $tag = null;
 
 	function init() {
 		parent::init();
@@ -180,7 +147,13 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	 **/
 	public function Products(){
 	//	return $this->ProductsShowable("\"FeaturedProduct\" = 1",$recursive);
-		return $this->ProductsShowable($this->tag);
+		if($this->tag) {
+			$toShow = $this->tag;
+		}
+		else {
+			$toShow = $this->EcommerceProductTags();
+		}
+		return $this->ProductsShowable($toShow);
 	}
 
 	function show() {
@@ -204,7 +177,7 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	}
 
 	function Tags() {
-		$dos = DataObject::get("EcommerceProductTag");
+		$dos = $this->EcommerceProductTags();
 		if($dos) {
 			foreach($dos as $do) {
 				if($do->Code == $this->tag) {
@@ -219,21 +192,5 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	}
 
 
-
-	function SortLinks(){
-		if(count(ProductGroup::get_sort_options()) <= 0) return null;
-		$sort = (isset($_GET['sortby'])) ? Convert::raw2sql($_GET['sortby']) : $this->MyDefaultSortOrder();
-		$dos = new DataObjectSet();
-		foreach(ProductGroup::get_sort_options() as $key => $array){
-			$current = ($key == $sort) ? 'current' : false;
-			$dos->push(new ArrayData(array(
-				'Name' => _t('ProductGroup.SORTBY'.strtoupper(str_replace(' ','',$array['Title'])),$array['Title']),
-				'Link' => $this->Link()."?sortby=$key",
-				'Current' => $current,
-				'LinkingMode' => $current ? "current" : "link"
-			)));
-		}
-		return $dos;
-	}
 
 }

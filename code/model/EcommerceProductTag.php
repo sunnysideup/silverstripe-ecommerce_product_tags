@@ -17,6 +17,10 @@ class EcommerceProductTag extends DataObject {
 		"Products" => "Product"
 	);
 
+	public static $belongs_many_many = array(
+		"ProductGroupWithTagsPages" => "ProductGroupWithTags"
+	);
+
 	public static $casting = array(
 		"TinyIcon" => "HTMLText",
 		"Link" => "Varchar"
