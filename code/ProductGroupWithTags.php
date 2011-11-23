@@ -9,21 +9,28 @@
 
 class ProductGroupWithTags extends ProductGroup {
 
+	/**
+	 * standard SS variable
+	 */
 	public static $many_many = array(
 		"EcommerceProductTags" => "EcommerceProductTag"
 	);
 
-	public static $defaults = array(
-		"DefaultSortOrder" => "title",
-	);
-
+	/**
+	 * standard SS variable - not used for now, but under consideration...
+	 */
 	//public static $allowed_children = "none";
+
+	/**
+	 * standard SS variable
+	 * we set this variable, becase we dont want it to be Product (in the parent class it is product)
+	 */
 	public static $default_child = 'Page';
 
 	/**
 	 * standard SS variable
 	 */
-	public static $icon = 'ecommerce/ecommerce_product_tags/icons/ProductGroupWithTags';
+	public static $icon = 'ecommerce_product_tags/images/icons/ProductGroupWithTags';
 
 	/**
 	 * standard SS method
@@ -37,7 +44,7 @@ class ProductGroupWithTags extends ProductGroup {
 			$fields->addFieldsToTab(
 				"Root.Content.Tags",
 				array(
-					new CheckboxSetField("EcommerceProductTags", "Select Relevant Tags", $dosArray)
+					new CheckboxSetField("EcommerceProductTags", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGS", "Select Tags to Show"), $dosArray)
 				)
 			);
 		}
@@ -128,8 +135,15 @@ class ProductGroupWithTags extends ProductGroup {
 
 class ProductGroupWithTags_Controller extends Page_Controller {
 
+	/**
+	 * currently selected tag
+	 * @var Object
+	 */
 	protected $tag = null;
 
+	/**
+	 * standard SS method
+	 */
 	function init() {
 		parent::init();
 		Requirements::themedCSS('Products');
@@ -143,10 +157,9 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	/**
 	 * Return the products for this group.
 	 *
-	 *@return DataObjectSet(Products)
+	 * @return DataObjectSet(Products)
 	 **/
 	public function Products(){
-	//	return $this->ProductsShowable("\"FeaturedProduct\" = 1",$recursive);
 		if($this->tag) {
 			$toShow = $this->tag;
 		}
@@ -156,10 +169,16 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		return $this->ProductsShowable($toShow);
 	}
 
+	/**
+	 * just a placeholder that is required
+	 */
 	function show() {
 		return array();
 	}
 
+	/**
+	 * change title in case of a selected tag
+	 */
 	function Title() {
 		$v = $this->Title;
 		if($this->tag) {
@@ -168,6 +187,10 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		return $v;
 	}
 
+	/**
+	 * change MetaTitle in case of a selected tag
+	 * TODO: this method does not seem to be working
+	 */
 	function MetaTitle() {
 		$v = $this->MetaTitle;
 		if($this->tag) {
@@ -176,6 +199,9 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		return $v;
 	}
 
+	/**
+	 * Tags available in the template
+	 */
 	function Tags() {
 		$dos = $this->EcommerceProductTags();
 		if($dos) {
