@@ -29,7 +29,7 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 
 	function onAfterWrite(){
 		if($this->newTag) {
-			$this->newTag->Product()->add($this->owner);
+			$this->newTag->Products()->add($this->owner);
 			$this->owner->EcommerceProductTags()->add($this->newTag);
 		}
 		if(isset($_REQUEST["AddATag"])) {
@@ -39,6 +39,7 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 	}
 
 	function onBeforeWrite() {
+		parent::onBeforeWrite();
 		if(isset($_REQUEST["AddATag"])) {
 			$name = Convert::raw2sql($_REQUEST["AddATag"]);
 			if($name) {

@@ -64,6 +64,8 @@ class EcommerceProductTag extends DataObject {
 		$fields = parent::getCMSFields();
 		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Image"));
 		$fields->replaceField("ExplanationPageID", new TreeDropdownField("ExplanationPageID", "Page explaining tag", "SiteTree"));
+		//temporary hack, because image fields do not work in modeladmin
+		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Images"));
 		if($this->ID) {
 			if($dos = DataObject::get("Product")) {
 				$dosArray = $dos->toDropDownMap();
