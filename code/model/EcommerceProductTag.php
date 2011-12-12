@@ -62,6 +62,7 @@ class EcommerceProductTag extends DataObject {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
+		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Image"));
 		$fields->replaceField("ExplanationPageID", new TreeDropdownField("ExplanationPageID", "Page explaining tag", "SiteTree"));
 		if($this->ID) {
 			if($dos = DataObject::get("Product")) {
@@ -72,7 +73,7 @@ class EcommerceProductTag extends DataObject {
 		if($this->ID) {
 			$dos = DataObject::get("EcommerceProductTag", "EcommerceProductTag.ID <> ".$this->ID);
 			if($dos) {
-				$dosArray = $dos->toDropDownMap("ID", "Name", "-- do not merge --");
+				$dosArray = $dos->toDropDownMap("ID", "Title", "-- do not merge --");
 				$fields->addFieldToTab("Root.Merge", new DropdownField("MergeID", "Merge <i>$this->Name</i> into:", $dosArray));
 			}
 		}
