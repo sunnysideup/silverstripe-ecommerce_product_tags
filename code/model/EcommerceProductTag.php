@@ -2,6 +2,13 @@
 
 class EcommerceProductTag extends DataObject {
 
+	public static $api_access = array(
+		'view' => array(
+			"Title",
+			"Explanation",
+			"Products"
+		)
+	 );
 	public static $db = array(
 		"Title" => "Varchar(100)",
 		"Explanation" => "Varchar(255)",
