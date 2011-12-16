@@ -2,6 +2,10 @@
 
 class EcommerceProductTag extends DataObject {
 
+	/**
+	 * what variables are accessible through  http://mysite.com/api/v1/EcommerceProductTag/
+	 * @var array
+	 */
 	public static $api_access = array(
 		'view' => array(
 			"Title",
@@ -66,6 +70,7 @@ class EcommerceProductTag extends DataObject {
 			return $page->Link("show")."/".$this->Code."/";
 		}
 	}
+
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
