@@ -1,4 +1,3 @@
-<% if Tags %>
 <ul class="tagList">
 	<% control Tags %>
 	<li class="$LinkingMode">
@@ -6,4 +5,3 @@
 	</li>
 	<% end_control %>
 </ul>
-<% end_if %>
