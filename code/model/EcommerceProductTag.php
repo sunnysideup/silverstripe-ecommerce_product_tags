@@ -14,9 +14,10 @@ class EcommerceProductTag extends DataObject {
 		)
 	 );
 	public static $db = array(
+		"Code" => "Varchar(30)",
 		"Title" => "Varchar(100)",
 		"Explanation" => "Varchar(255)",
-		"Code" => "Varchar(30)"
+		"Synonyms" => "Text"
 	);
 
 	public static $has_one = array(
@@ -78,6 +79,7 @@ class EcommerceProductTag extends DataObject {
 		$fields->replaceField("ExplanationPageID", new TreeDropdownField("ExplanationPageID", "Page explaining tag", "SiteTree"));
 		//temporary hack, because image fields do not work in modeladmin
 		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Images"));
+		$fields->addFieldToTab("Root.Merge", new TextField("Synonyms", "Synonyms (seperate by comma)"));
 		if($this->ID) {
 			if($dos = DataObject::get("Product")) {
 				$dosArray = $dos->toDropDownMap();
@@ -100,7 +102,7 @@ class EcommerceProductTag extends DataObject {
 	public function onBeforeWrite(){
 		parent::onBeforeWrite();
 		if(!$this->Code) {
-			$this->Code =  ereg_replace("[^A-Za-z0-9]", "", $this->Title);
+			$this->Code = ereg_replace("[^A-Za-z0-9]", "", $this->Title);
 		}
 		$id = intval($this->ID);
 		if(!$id) {
@@ -112,9 +114,12 @@ class EcommerceProductTag extends DataObject {
 			$i++;
 			$this->Code = $startCode."_".$i;
 		}
-		if(isset($_REQUEST["MergeID"])) {
+		if(isset($_REQUEST["MergeID"]) && $_REQUEST["MergeID"]) {
+			$this->mergeInto = null;
 			$mergeID = intval($_REQUEST["MergeID"]);
-			if($mergeID) {
+			$_REQUEST["MergeID"] = null;
+			unset($_REQUEST["MergeID"]);
+			if($mergeID != $this->ID) {
 				$this->mergeInto = DataObject::get_by_id("EcommerceProductTag", $mergeID);
 			}
 		}
@@ -125,13 +130,15 @@ class EcommerceProductTag extends DataObject {
 	function onAfterWrite(){
 		parent::onAfterWrite();
 		if($this->mergeInto) {
+			if($this->mergeInto->Synonyms) {
+				$this->mergeInto->Synonyms .= ", ";
+			}
+			$this->mergeInto->Synonyms .= str_replace(",", ";", $this->Title);
+			$this->mergeInto->write();
 			DB::query("UPDATE \"EcommerceProductTag_Products\" SET \"EcommerceProductTagID\" = ".$this->mergeInto->ID." WHERE \"EcommerceProductTagID\"  = ".$this->ID);
+			$this->mergeInto = null;
 			$this->delete();
 		}
-		if(isset($_REQUEST["MergeID"])) {
-			unset($_REQUEST["MergeID"]);
-		}
-		$this->mergeInto = null;
 	}
 
 

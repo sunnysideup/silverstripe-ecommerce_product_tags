@@ -52,14 +52,21 @@ class ProductGroupWithTags extends ProductGroup {
 	}
 
 
+
 	/**
-	 * Retrieve a set of products, based on the given parameters. Checks get query for sorting and pagination.
+	 * returns the inital (all) products, based on the all the eligile products
+	 * for the page.
+	 *
+	 * This is THE pivotal method that probably changes for classes that
+	 * extend ProductGroup as here you can determine what products or other buyables are shown.
+	 *
+	 * The return from this method will then be sorted and filtered to product the final product list
 	 *
 	 * @param string $extraFilter Additional SQL filters to apply to the Product retrieval
-	 * @param boolean $recursive
+	 * @param mixed $tagOrTags - can be almost any variable referring to tags
 	 * @return DataObjectSet | Null
-	 */
-	function ProductsShowable($tagOrTags, $extraFilter = ''){
+	 **/
+	protected function currentInitialProducts($extraFilter = '', $tagOrTags = null){
 
 		// STANDARD FILTER
 		$filter = $this->getStandardFilter(); //
@@ -102,34 +109,16 @@ class ProductGroupWithTags extends ProductGroup {
 				}
 			}
 		}
-
-		if($idArray) {
-			if(count($idArray)) {
-				//SORT BY
-				if(!isset($_GET['sortby'])) {
-					$sortKey = $this->MyDefaultSortOrder();
-				}
-				else {
-					$sortKey = Convert::raw2sqL($_GET['sortby']);
-				}
-				$sort = $this->getSortOptionSQL($sortKey);
-				$stage = '';
-				if(Versioned::current_stage() == "Live") {
-					$stage = "_Live";
-				}
-				$whereForPageOnly = "\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter";
-				$products = DataObject::get('Product',$whereForPageOnly,$sort);
-				if($products) {
-					return $products;
-				}
-			}
-		}
-		return null;
+		$allProducts = DataObject::get('Product',"\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter");
+		return $allProducts;
 	}
+
 
 	function ChildGroups() {
 		return null;
 	}
+
+
 
 }
 
@@ -149,9 +138,6 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		Requirements::themedCSS('Products');
 		Requirements::themedCSS('ProductGroup');
 		Requirements::themedCSS('ProductGroupWithTags');
-		if($tag = $this->request->param("ID")) {
-			$this->tag = EcommerceProductTag::get_by_code($tag);
-		}
 	}
 
 	/**
@@ -173,6 +159,9 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	 * just a placeholder that is required
 	 */
 	function show() {
+		if($tag = $this->request->param("ID")) {
+			$this->tag = EcommerceProductTag::get_by_code($tag);
+		}
 		return array();
 	}
 
