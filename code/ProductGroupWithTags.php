@@ -68,6 +68,11 @@ class ProductGroupWithTags extends ProductGroup {
 	 **/
 	protected function currentInitialProducts($extraFilter = '', $tagOrTags = null){
 
+		$stage = '';
+		if(Versioned::current_stage() == "Live") {
+			$stage = "_Live";
+		}
+
 		// STANDARD FILTER
 		$filter = $this->getStandardFilter(); //
 
