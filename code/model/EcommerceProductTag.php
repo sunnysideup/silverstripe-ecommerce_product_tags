@@ -101,8 +101,8 @@ class EcommerceProductTag extends DataObject {
 
 	public function onBeforeWrite(){
 		parent::onBeforeWrite();
-		if(!$this->Code) {
-			$this->Code = ereg_replace("[^A-Za-z0-9]", "", $this->Title);
+		if($this->Title) {
+			$this->Code = strtolower(ereg_replace("[^A-Za-z0-9]", "", $this->Title));
 		}
 		$id = intval($this->ID);
 		if(!$id) {
