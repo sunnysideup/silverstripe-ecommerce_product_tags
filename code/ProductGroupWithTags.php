@@ -75,9 +75,8 @@ class ProductGroupWithTags extends ProductGroup {
 
 		// STANDARD FILTER
 		$filter = $this->getStandardFilter(); //
-
 		// EXTRA FILTER
-		if($extraFilter) {
+		if($extraFilter && is_string($extraFilter)) {
 			$filter.= " AND $extraFilter";
 		}
 		$dos = null;
