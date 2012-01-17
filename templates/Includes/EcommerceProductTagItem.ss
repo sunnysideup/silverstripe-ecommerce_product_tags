@@ -1,6 +1,6 @@
 <% if Icon %><span class="icon">$Icon.SetSize(32, 32)</span><% end_if %>
 <% if Link %>
-	<a href="$Link" class="title" rel="filter$Code"><strong>$Title</strong></a>
+	<a href="$Link" class="title" rel="filter_$Code"><strong>$Title</strong></a>
 <% else %>
 	<strong class="title">$Title</strong>
 <% end_if %>
