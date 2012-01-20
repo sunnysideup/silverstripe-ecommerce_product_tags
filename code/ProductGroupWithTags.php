@@ -41,13 +41,17 @@ class ProductGroupWithTags extends ProductGroup {
 		$dos = DataObject::get("EcommerceProductTag");
 		if($dos) {
 			$dosArray = $dos->toDropDownMap();
-			$fields->addFieldsToTab(
-				"Root.Content.Tags",
-				array(
-					new CheckboxSetField("EcommerceProductTags", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGS", "Select Tags to Show"), $dosArray)
-				)
-			);
+			$field = new CheckboxSetField("EcommerceProductTags", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGS", "Select Tags to Show"), $dosArray);
 		}
+		else {
+			$field = new LiteralField("EcommerceProductTags_Explanation", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGSEXPLANANTION", "Create some tags first (see Shop) before you can select what tags to show on this page."));
+		}
+		$fields->addFieldsToTab(
+			"Root.Content.Tags",
+			array(
+				$field
+			)
+		);
 		return $fields;
 	}
 
@@ -99,7 +103,8 @@ class ProductGroupWithTags extends ProductGroup {
 		else {
 			return null;
 		}
-		$idArray = array();
+		//add at least one product - albeit a fake one...
+		$idArray = array(0 => 0);
 		if($dos) {
 			if($dos->count()) {
 				foreach($dos as $do) {
