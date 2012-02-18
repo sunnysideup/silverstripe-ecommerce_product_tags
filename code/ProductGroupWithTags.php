@@ -119,7 +119,7 @@ class ProductGroupWithTags extends ProductGroup {
 				}
 			}
 		}
-		$allProducts = DataObject::get('Product',"\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter");
+		$allProducts = DataObject::get('Product',"\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter", null, $this->getGroupJoin());
 		return $allProducts;
 	}
 
