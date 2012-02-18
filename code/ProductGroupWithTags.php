@@ -37,7 +37,6 @@ class ProductGroupWithTags extends ProductGroup {
 	 */
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
-		$fields->removeByName("LevelOfProductsToShow");
 		$dos = DataObject::get("EcommerceProductTag");
 		if($dos) {
 			$dosArray = $dos->toDropDownMap();
@@ -83,6 +82,8 @@ class ProductGroupWithTags extends ProductGroup {
 		if($extraFilter && is_string($extraFilter)) {
 			$filter.= " AND $extraFilter";
 		}
+		$groupFilter = $this->getGroupFilter();
+		$filter .= " AND $groupFilter";
 		$dos = null;
 		if(!$tagOrTags) {
 			return null;
