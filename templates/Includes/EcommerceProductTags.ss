@@ -1,6 +1,6 @@
 <% if EcommerceProductTags %>
 <div id="EcommerceProductTags">
-	<h3><% _t("ATTRIBUTES", "Attributes") %></h3>
+	<h3><% _t("TAGS", "Tags") %></h3>
 	<ul class="tagList">
 		<% control EcommerceProductTags %>
 		<li class="$OddEven $FirstLast">
