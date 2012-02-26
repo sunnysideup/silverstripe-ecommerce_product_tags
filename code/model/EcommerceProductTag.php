@@ -66,7 +66,16 @@ class EcommerceProductTag extends DataObject {
 
 	public function Link() {return $this->getLink();}
 	public function getLink() {
-		$page = DataObject::get_one("ProductGroupWithTags");
+		$page = DataObject::get_one("ProductGroupWithTags", "\"LevelOfProductsToShow\" = -1");
+		if(!$page) {
+			$pages2 = $this->ProductGroupWithTagsPages();
+			if($pages2) {
+				$page = $pages2->First();
+			}
+			if(!$page) {
+				$page = DataObject::get_one("ProductGroupWithTags");
+			}
+		}
 		if($page) {
 			return $page->Link("show")."/".$this->Code."/";
 		}
