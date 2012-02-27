@@ -77,7 +77,7 @@ class EcommerceProductTag extends DataObject {
 			}
 		}
 		if($page) {
-			return $page->Link("show")."/".$this->Code."/";
+			return $page->Link()."#filter_".$this->Code;
 		}
 	}
 
