@@ -55,10 +55,6 @@ class EcommerceProductTag extends DataObject {
 	//defaults
 	public static $default_sort = "\"Title\" ASC";
 
-	public function populateDefaults() {
-		parent::populateDefaults();
-	}
-
 	public function TinyIcon() {return $this->getTinyIcon();}
 	public function getTinyIcon() {
 		return $this->Icon()->CroppedImage(32,32);
