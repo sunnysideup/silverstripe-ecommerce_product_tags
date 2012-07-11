@@ -12,7 +12,8 @@ class EcommerceProductTag extends DataObject {
 			"Explanation",
 			"Products"
 		)
-	 );
+	);
+
 	public static $db = array(
 		"Code" => "Varchar(30)",
 		"Title" => "Varchar(100)",
@@ -52,6 +53,15 @@ class EcommerceProductTag extends DataObject {
 	public static $plural_name = "Product Tags";
 
 	//CRUD settings
+
+	/**
+	 * standard SS method
+	 * @return Boolean
+	 */
+	public function canView($member = null) {
+		return true;
+	}
+
 	//defaults
 	public static $default_sort = "\"Title\" ASC";
 
