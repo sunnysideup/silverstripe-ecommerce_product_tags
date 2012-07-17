@@ -97,6 +97,23 @@ class EcommerceProductTag extends DataObject {
 		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Images"));
 		$fields->addFieldToTab("Root.Merge", new TextField("Synonyms", "Synonyms (seperate by comma)"));
 		if($this->ID) {
+			$stage = '';
+			if(Versioned::current_stage() == "Live") {
+				$stage = "_Live";
+			}
+			$selectedProducts = $this->Products();
+			$sortString = "";
+			if($selectedProducts) {
+				$selectedProductsArray = $selectedProducts->map("ID", "Title");
+				$sortStringEnd = "";
+				if(is_array($selectedProductsArray) && count($selectedProductsArray)) {
+					foreach($selectedProductsArray as $ID => $Title) {
+						$sortString .= "IF(Product$stage.ID = $ID, 1, ";
+						$sortStringEnd .= ")";
+					}
+					$sortString .= " 0".$sortStringEnd." DESC, \"Title\"";
+				}
+			}
 			if($dos = DataObject::get("Product")) {
 				$dosArray = $dos->toDropDownMap();
 				$fields->replaceField("Products", new CheckboxSetField("Products", "Applies to ...", $dosArray));
