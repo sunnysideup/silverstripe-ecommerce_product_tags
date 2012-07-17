@@ -96,7 +96,7 @@ class EcommerceProductTag extends DataObject {
 		//temporary hack, because image fields do not work in modeladmin
 		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Images"));
 		$fields->addFieldToTab("Root.Merge", new TextField("Synonyms", "Synonyms (seperate by comma)"));
-		if($this->ID) {
+		if($this->exists()) {
 			$stage = '';
 			if(Versioned::current_stage() == "Live") {
 				$stage = "_Live";
@@ -114,12 +114,10 @@ class EcommerceProductTag extends DataObject {
 					$sortString .= " 0".$sortStringEnd." DESC, \"Title\"";
 				}
 			}
-			if($dos = DataObject::get("Product")) {
+			if($dos = DataObject::get("Product", "", $sortString)) {
 				$dosArray = $dos->toDropDownMap();
 				$fields->replaceField("Products", new CheckboxSetField("Products", "Applies to ...", $dosArray));
 			}
-		}
-		if($this->ID) {
 			$dos = DataObject::get("EcommerceProductTag", "EcommerceProductTag.ID <> ".$this->ID);
 			if($dos) {
 				$dosArray = $dos->toDropDownMap("ID", "Title", "-- do not merge --");
