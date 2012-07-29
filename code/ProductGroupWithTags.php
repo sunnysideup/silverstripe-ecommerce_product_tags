@@ -10,6 +10,18 @@
 class ProductGroupWithTags extends ProductGroup {
 
 	/**
+	 * Standard SS variable.
+	 */
+	public static $singular_name = "Product Category Page with Tags";
+		function i18n_singular_name() { return _t("ProductGroup.PRODUCTGROUPWITHTAGS", "Product Category Page with Tags");}
+
+	/**
+	 * Standard SS variable.
+	 */
+	public static $plural_name = "Product Category Pages with Tags";
+		function i18n_plural_name() { return _t("ProductGroup.PRODUCTGROUPSWITHTAGS", "Product Category Pages with Tags");}
+
+	/**
 	 * standard SS variable
 	 */
 	public static $many_many = array(
