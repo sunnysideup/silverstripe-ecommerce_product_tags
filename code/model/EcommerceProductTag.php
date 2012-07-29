@@ -90,11 +90,10 @@ class EcommerceProductTag extends DataObject {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
-		//$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Image"));
 		$fields->replaceField("Code", new ReadonlyField("Code", "Code"));
-		$fields->replaceField("ExplanationPageID", new TreeDropdownField("ExplanationPageID", "Page explaining tag", "SiteTree"));
+		$fields->replaceField("ExplanationPageID", new OptionalTreeDropdownField("ExplanationPageID", "Page explaining tag", "SiteTree"));
 		//temporary hack, because image fields do not work in modeladmin
-		$fields->replaceField("Icon", new TreeDropdownField("IconID", "Icon", "Images"));
+		$fields->replaceField("Icon", new OptionalTreeDropdownField("IconID", "Icon", "Images"));
 		$fields->addFieldToTab("Root.Merge", new TextField("Synonyms", "Synonyms (seperate by comma)"));
 		if($this->exists()) {
 			$stage = '';
