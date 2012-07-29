@@ -10,5 +10,12 @@
 
 //===================---------------- START ecommerce_product_tag MODULE ----------------===================
 //Object::add_extension("Product","EcommerceProductTagProductDecorator");
-//ProductsAndGroupsModelAdmin::add_managed_model("EcommerceProductTag");
+/**
+ * ADD TO ECOMMERCE.YAML:
+ProductsAndGroupsModelAdmin:
+	managed_modules: [
+		...
+		EcommerceProductTag
+	]
+*/
 //===================---------------- END ecommerce_product_tag MODULE ----------------===================
