@@ -1,5 +1,5 @@
 {
-	"name": "silverstripe/ecommerce_product_tags",
+	"name": "sunnysideup/ecommerce_product_tags",
 	"type": "silverstripe-module",
 	"description": "Tag your silverstripe e-commerce products so that you can search between product categories based on tags (e.g. show me all 'new' products) where 'new' is a tag.",
 	"homepage": "http://www.silverstripe-ecommerce.com",
