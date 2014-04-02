@@ -10,9 +10,9 @@
 <% if Products %>
 	<div id="Products" class="category">
 		<div class="resultsBar">
-			<% if SortLinks %><span class="sortOptions"><% _t('ProductGroup.SORTBY','Sort by') %> <% control SortLinks %><a href="$Link" class="sortlink $Current">$Name</a> <% end_control %></span><% end_if %>
+			<% if SortLinks %><span class="sortOptions"><% _t('ProductGroup.SORTBY','Sort by') %> <% with/loop SortLinks %><a href="$Link" class="sortlink $Current">$Name</a> <% end_with/loop %></span><% end_if %>
 		</div>
-		<ul class="productList"><% control Products %><% include ProductGroupItem %><% end_control %></ul>
+		<ul class="productList"><% with/loop Products %><% include ProductGroupItem %><% end_with/loop %></ul>
 		<div class="clear"><!-- --></div>
 	</div>
 <% include ProductGroupPagination %>

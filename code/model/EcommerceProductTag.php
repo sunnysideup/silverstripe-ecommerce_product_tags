@@ -5,53 +5,53 @@ class EcommerceProductTag extends DataObject {
 	/**
 	 * what variables are accessible through  http://mysite.com/api/v1/EcommerceProductTag/
 	 * @var array
-
-	public static $api_access = array(
+	 */
+	private static  $api_access = array(
 		'view' => array(
 			"Title",
 			"Explanation",
 			"Products"
 		)
 	);
-	 */
 
-	public static $db = array(
+
+	private static $db = array(
 		"Code" => "Varchar(30)",
 		"Title" => "Varchar(100)",
 		"Explanation" => "Varchar(255)",
 		"Synonyms" => "Text"
 	);
 
-	public static $has_one = array(
+	private static $has_one = array(
 		"Icon" => "Image",
 		"ExplanationPage" => "SiteTree"
 	);
 
-	public static $many_many = array(
+	private static $many_many = array(
 		"Products" => "Product"
 	);
 
-	public static $belongs_many_many = array(
+	private static $belongs_many_many = array(
 		"ProductGroupWithTagsPages" => "ProductGroupWithTags"
 	);
 
-	public static $casting = array(
+	private static $casting = array(
 		"TinyIcon" => "HTMLText",
 		"Link" => "Varchar"
 	); //adds computed fields that can also have a type (e.g.
 
-	public static $searchable_fields = array(
+	private static $searchable_fields = array(
 		"Title" => "PartialMatchFilter",
 		"Code" => "PartialMatchFilter"
 	);
 
-	public static $field_labels = array();
+	private static $field_labels = array();
 
-	public static $summary_fields = array("Title" => "Name", "TinyIcon" => "Icon");
+	private static $summary_fields = array("Title" => "Name", "TinyIcon" => "Icon");
 
-	public static $singular_name = "Product Tag";
+	private static $singular_name = "Product Tag";
 
-	public static $plural_name = "Product Tags";
+	private static $plural_name = "Product Tags";
 
 	//CRUD settings
 
@@ -64,7 +64,7 @@ class EcommerceProductTag extends DataObject {
 	}
 
 	//defaults
-	public static $default_sort = "\"Title\" ASC";
+	private static $default_sort = "\"Title\" ASC";
 
 	public function TinyIcon() {return $this->getTinyIcon();}
 	public function getTinyIcon() {
@@ -73,14 +73,16 @@ class EcommerceProductTag extends DataObject {
 
 	public function Link() {return $this->getLink();}
 	public function getLink() {
-		$page = DataObject::get_one("ProductGroupWithTags", "\"LevelOfProductsToShow\" = -1");
+		$page = ProductGroupWithTags::get()
+			->filter(array("LevelOfProductsToShow" => 2))
+			->first();
 		if(!$page) {
 			$pages2 = $this->ProductGroupWithTagsPages();
 			if($pages2) {
 				$page = $pages2->First();
 			}
 			if(!$page) {
-				$page = DataObject::get_one("ProductGroupWithTags");
+				$page = ProductGroupWithTags::get()->first();
 			}
 		}
 		if($page) {
@@ -104,7 +106,7 @@ class EcommerceProductTag extends DataObject {
 			$selectedProducts = $this->Products();
 			$sortString = "";
 			if($selectedProducts) {
-				$selectedProductsArray = $selectedProducts->map("ID", "Title");
+				$selectedProductsArray = $selectedProducts->map("ID", "Title")->toArray();
 				$sortStringEnd = "";
 				if(is_array($selectedProductsArray) && count($selectedProductsArray)) {
 					foreach($selectedProductsArray as $ID => $Title) {
@@ -114,13 +116,15 @@ class EcommerceProductTag extends DataObject {
 					$sortString .= " 0".$sortStringEnd." DESC, \"Title\"";
 				}
 			}
-			if($dos = DataObject::get("Product", "", $sortString)) {
-				$dosArray = $dos->toDropDownMap();
+			if($dos = Product::get()) {
+				$dosArray = $dos->map()->toArray();
 				$fields->replaceField("Products", new CheckboxSetField("Products", "Applies to ...", $dosArray));
 			}
-			$dos = DataObject::get("EcommerceProductTag", "EcommerceProductTag.ID <> ".$this->ID);
-			if($dos) {
-				$dosArray = $dos->toDropDownMap("ID", "Title", "-- do not merge --");
+			$dos = EcommerceProductTag::get()
+				->exclude(array("ID" => $this->ID));
+			if($dos->count()) {
+				$dosArray = array("" => "DoNotMerge");
+				$dosArray += $dos->map()->toArray();
 				$fields->addFieldToTab("Root.Merge", new DropdownField("MergeID", "Merge <i>$this->Name</i> into:", $dosArray));
 			}
 		}
@@ -141,7 +145,13 @@ class EcommerceProductTag extends DataObject {
 		}
 		$i = 0;
 		$startCode = $this->Code;
-		while(DataObject::get_one($this->ClassName, "\"Code\" = '".$this->Code."' AND \"".$this->ClassName."\".\"ID\" <> ".$id) && $i < 10) {
+		$className = $this->ClassName;
+
+		while($className::get()
+			->filter(array("Code" => $this->Code) )
+			->exclude(array("ID" => $id))->count()
+			&& $i < 10
+		) {
 			$i++;
 			$this->Code = $startCode."_".$i;
 		}
@@ -151,7 +161,7 @@ class EcommerceProductTag extends DataObject {
 			$_REQUEST["MergeID"] = null;
 			unset($_REQUEST["MergeID"]);
 			if($mergeID != $this->ID) {
-				$this->mergeInto = DataObject::get_by_id("EcommerceProductTag", $mergeID);
+				$this->mergeInto = EcommerceProductTag::get()->byID($mergeID);
 			}
 		}
 	}
@@ -175,7 +185,9 @@ class EcommerceProductTag extends DataObject {
 
 	static function get_by_code($code) {
 		$code = Convert::raw2sql($code);
-		return DataObject::get_one("EcommerceProductTag", "\"Code\" = '$code'");
+		return EcommerceProductTag::get()
+			->filter(array"Code" => $code))
+			->first();
 	}
 
 }

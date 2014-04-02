@@ -12,53 +12,53 @@ class ProductGroupWithTags extends ProductGroup {
 	/**
 	 * Standard SS variable.
 	 */
-	public static $singular_name = "Product Category Page with Tags";
+	private static $singular_name = "Product Category Page with Tags";
 		function i18n_singular_name() { return _t("ProductGroup.PRODUCTGROUPWITHTAGS", "Product Category Page with Tags");}
 
 	/**
 	 * Standard SS variable.
 	 */
-	public static $plural_name = "Product Category Pages with Tags";
+	private static $plural_name = "Product Category Pages with Tags";
 		function i18n_plural_name() { return _t("ProductGroup.PRODUCTGROUPSWITHTAGS", "Product Category Pages with Tags");}
 
 	/**
 	 * standard SS variable
 	 */
-	public static $many_many = array(
+	private static $many_many = array(
 		"EcommerceProductTags" => "EcommerceProductTag"
 	);
 
 	/**
 	 * standard SS variable - not used for now, but under consideration...
 	 */
-	//public static $allowed_children = "none";
+	//private static $allowed_children = "none";
 
 	/**
 	 * standard SS variable
 	 * we set this variable, becase we dont want it to be Product (in the parent class it is product)
 	 */
-	public static $default_child = 'Page';
+	private static $default_child = 'Page';
 
 	/**
 	 * standard SS variable
 	 */
-	public static $icon = 'ecommerce_product_tags/images/icons/ProductGroupWithTags';
+	private static $icon = 'ecommerce_product_tags/images/icons/ProductGroupWithTags';
 
 	/**
 	 * standard SS method
 	 */
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
-		$dos = DataObject::get("EcommerceProductTag");
-		if($dos) {
-			$dosArray = $dos->toDropDownMap();
+		$dos = EcommerceProductTag::get();
+		if($dos->count()) {
+			$dosArray = $dos->map()->toArray();
 			$field = new CheckboxSetField("EcommerceProductTags", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGS", "Select Tags to Show"), $dosArray);
 		}
 		else {
 			$field = new LiteralField("EcommerceProductTags_Explanation", _t("ProductGroupWithTags.ECOMMERCEPRODUCTTAGSEXPLANANTION", "Create some tags first (see Shop) before you can select what tags to show on this page."));
 		}
 		$fields->addFieldsToTab(
-			"Root.Content.Tags",
+			"Root.Tags",
 			array(
 				$field
 			)
@@ -105,28 +105,24 @@ class ProductGroupWithTags extends ProductGroup {
 			//do nothing
 		}
 		elseif($tagOrTags instanceOf DataObject) {
-			$dos = new DataObjectSet(array($tagOrTags));
+			$dos = new ArrayList(array($tagOrTags));
 		}
-		elseif(is_array($tagOrTags)) {
-			$dos = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".implode(",", $tagOrTags).")");
-		}
-		elseif(intval($tagOrTags) == $tagOrTags) {
-			$dos = DataObject::get("EcommerceProductTag", "\"EcommerceProductTag\".\"ID\" IN(".$tagOrTags.")");
+		elseif(is_array($tagOrTags) || intval($tagOrTags) == $tagOrTags) {
+			$dos = EcommerceProductTag::get()
+				->filter(array("ID" => $tagOrTags));
 		}
 		else {
 			return null;
 		}
 		//add at least one product - albeit a fake one...
 		$idArray = array(0 => 0);
-		if($dos) {
-			if($dos->count()) {
-				foreach($dos as $do) {
-					$products = $do->getManyManyComponents('Products');
-					if($products && $products->count()) {
-						$addedArray = $products->column("ID");
-						if(is_array($addedArray) && count($addedArray)) {
-							$idArray = array_merge($idArray, $addedArray);
-						}
+		if($dos->count()) {
+			foreach($dos as $do) {
+				$products = $do->getManyManyComponents('Products');
+				if($products && $products->count()) {
+					$addedArray = $products->column("ID");
+					if(is_array($addedArray) && count($addedArray)) {
+						$idArray = array_merge($idArray, $addedArray);
 					}
 				}
 			}
@@ -198,17 +194,6 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 		return $v;
 	}
 
-	/**
-	 * change MetaTitle in case of a selected tag
-	 * TODO: this method does not seem to be working
-	 */
-	function MetaTitle() {
-		$v = $this->MetaTitle;
-		if($this->tag) {
-			$v .= " - ".$this->tag->Title;
-		}
-		return $v;
-	}
 
 	/**
 	 * Tags available in the template

@@ -1,22 +1,18 @@
 <?php
 
 
-class EcommerceProductTagProductDecorator extends DataObjectDecorator {
+class EcommerceProductTagProductDecorator extends DataExtension {
 
-	function extraStatics () {
-		return array(
-			"belongs_many_many" => array(
-				"EcommerceProductTags" => "EcommerceProductTag"
-			)
-		);
-	}
+	private static $belongs_many_many = array(
+		"EcommerceProductTags" => "EcommerceProductTag"
+	);
 
-	function updateCMSFields(&$fields) {
-		$dos = DataObject::get("EcommerceProductTag");
+	function updateCMSFields(FieldList $fields) {
+		$dos = EcommerceProductTag::get();
 		if($dos && $this->owner->ID) {
-			$dosArray = $dos->toDropDownMap();
+			$dosArray = $dos->map()->toArray();
 			$fields->addFieldsToTab(
-				"Root.Content.Tags",
+				"Root.Tags",
 				array(
 					new CheckboxSetField("EcommerceProductTags", "Select Relevant Tags", $dosArray),
 					new TextField("AddATag", "Add a Tag")
@@ -43,7 +39,7 @@ class EcommerceProductTagProductDecorator extends DataObjectDecorator {
 		if(isset($_REQUEST["AddATag"])) {
 			$name = Convert::raw2sql($_REQUEST["AddATag"]);
 			if($name) {
-				$this->newTag = DataObject::get_one("EcommerceProductTag", "\"Title\" = '$name' OR \"Code\" = '$name'");
+				$this->newTag = EcommerceProductTag::get()->filterAny(array("Title" => $name, "Code" => $name);
 				if(!$this->newTag) {
 					$this->newTag = new EcommerceProductTag();
 					$this->newTag->Title = $name;
