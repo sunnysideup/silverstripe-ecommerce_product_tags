@@ -186,7 +186,7 @@ class EcommerceProductTag extends DataObject {
 	static function get_by_code($code) {
 		$code = Convert::raw2sql($code);
 		return EcommerceProductTag::get()
-			->filter(array"Code" => $code))
+			->filter(array("Code" => $code))
 			->first();
 	}
 

@@ -39,7 +39,7 @@ class EcommerceProductTagProductDecorator extends DataExtension {
 		if(isset($_REQUEST["AddATag"])) {
 			$name = Convert::raw2sql($_REQUEST["AddATag"]);
 			if($name) {
-				$this->newTag = EcommerceProductTag::get()->filterAny(array("Title" => $name, "Code" => $name);
+				$this->newTag = EcommerceProductTag::get()->filterAny(array("Title" => $name, "Code" => $name))->first();
 				if(!$this->newTag) {
 					$this->newTag = new EcommerceProductTag();
 					$this->newTag->Title = $name;

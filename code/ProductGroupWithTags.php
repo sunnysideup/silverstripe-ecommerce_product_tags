@@ -81,7 +81,7 @@ class ProductGroupWithTags extends ProductGroup {
 	 * @param mixed $tagOrTags - can be almost any variable referring to tags
 	 * @return DataObjectSet | Null
 	 **/
-	protected function currentInitialProducts($extraFilter = '', $tagOrTags = null){
+	protected function currentInitialProducts($extraFilter = ''){
 
 		$stage = '';
 		if(Versioned::current_stage() == "Live") {
@@ -132,7 +132,7 @@ class ProductGroupWithTags extends ProductGroup {
 	}
 
 
-	function ChildGroups() {
+	function ChildGroups($maxRecursiveLevel, $filter = "", $numberOfRecursions = 0) {
 		return null;
 	}
 
