@@ -1,7 +1,7 @@
 <ul class="tagList">
-	<% with/loop Tags %>
+	<% loop Tags %>
 	<li class="$LinkingMode">
 		<% include EcommerceProductTagItem %>
 	</li>
-	<% end_with/loop %>
+	<% end_loop %>
 </ul>

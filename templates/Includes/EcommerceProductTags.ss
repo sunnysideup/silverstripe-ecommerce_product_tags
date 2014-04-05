@@ -2,10 +2,10 @@
 <div id="EcommerceProductTags">
 	<h3><% _t("TAGS", "Tags") %></h3>
 	<ul class="tagList">
-		<% with/loop EcommerceProductTags %>
+		<% loop EcommerceProductTags %>
 		<li class="$OddEven $FirstLast">
 			<% include EcommerceProductTagItem %>
-		</li><% end_with/loop %>
+		</li><% end_loop %>
 	</ul>
 </div>
 <% end_if %>

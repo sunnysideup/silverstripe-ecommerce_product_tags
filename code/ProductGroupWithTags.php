@@ -82,40 +82,26 @@ class ProductGroupWithTags extends ProductGroup {
 	 * @return DataObjectSet | Null
 	 **/
 	protected function currentInitialProducts($extraFilter = ''){
-
-		$stage = '';
-		if(Versioned::current_stage() == "Live") {
-			$stage = "_Live";
-		}
-
-		// STANDARD FILTER
-		$filter = $this->getStandardFilter(); //
-		// EXTRA FILTER
-		if($extraFilter && is_string($extraFilter)) {
-			$filter.= " AND $extraFilter";
-		}
-		$groupFilter = $this->getGroupFilter();
-		$filter .= " AND $groupFilter";
-		$dos = null;
-		if(!$tagOrTags) {
+		$this->allProducts = parent::currentInitialProducts();
+		if(!$extraFilter) {
 			return null;
 		}
-		elseif($tagOrTags instanceOf DataObjectSet) {
+		elseif($extraFilter instanceOf DataList) {
 			$dos = $tagOrTags;
 			//do nothing
 		}
 		elseif($tagOrTags instanceOf DataObject) {
 			$dos = new ArrayList(array($tagOrTags));
 		}
-		elseif(is_array($tagOrTags) || intval($tagOrTags) == $tagOrTags) {
+		elseif(is_array($extraFilter) || intval($extraFilter) == $extraFilter) {
 			$dos = EcommerceProductTag::get()
-				->filter(array("ID" => $tagOrTags));
+				->filter(array("ID" => $extraFilter));
 		}
 		else {
 			return null;
 		}
 		//add at least one product - albeit a fake one...
-		$idArray = array(0 => 0);
+		$idArray = array();
 		if($dos->count()) {
 			foreach($dos as $do) {
 				$products = $do->getManyManyComponents('Products');
@@ -127,8 +113,10 @@ class ProductGroupWithTags extends ProductGroup {
 				}
 			}
 		}
-		$allProducts = DataObject::get('Product',"\"Product$stage\".\"ID\" IN (".implode(",", $idArray).") $filter", null, $this->getGroupJoin());
-		return $allProducts;
+		if(count($idArray)) {
+			$this->allProducts = $this->allProducts->filter(array("ID" => $idArray));
+		}
+		return $this->allProducts;
 	}
 
 
@@ -153,9 +141,9 @@ class ProductGroupWithTags_Controller extends Page_Controller {
 	 */
 	function init() {
 		parent::init();
-		Requirements::themedCSS('Products');
-		Requirements::themedCSS('ProductGroup');
-		Requirements::themedCSS('ProductGroupWithTags');
+		Requirements::themedCSS('Products', 'ecommerce');
+		Requirements::themedCSS('ProductGroup', 'ecommerce');
+		Requirements::themedCSS('ProductGroupWithTags', 'ecommerce_product_tags');
 	}
 
 	/**
