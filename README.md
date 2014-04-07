@@ -1,7 +1,6 @@
-###############################################
+
 ecommerce product tag
-Pre 0.1 proof of concept
-###############################################
+================================================================================
 
 Allows you to add "tags" to products.  The main
 purpose for this is to allow quicker and more
