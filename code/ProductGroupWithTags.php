@@ -84,7 +84,8 @@ class ProductGroupWithTags extends ProductGroup {
 	protected function currentInitialProducts($extraFilter = ''){
 		$this->allProducts = parent::currentInitialProducts();
 		if(!$extraFilter) {
-			return null;
+			$dos = null;
+			//do nothing - show all products
 		}
 		elseif($extraFilter instanceOf DataList) {
 			$dos = $tagOrTags;
@@ -102,7 +103,7 @@ class ProductGroupWithTags extends ProductGroup {
 		}
 		//add at least one product - albeit a fake one...
 		$idArray = array();
-		if($dos->count()) {
+		if($dos && $dos->count()) {
 			foreach($dos as $do) {
 				$products = $do->getManyManyComponents('Products');
 				if($products && $products->count()) {
