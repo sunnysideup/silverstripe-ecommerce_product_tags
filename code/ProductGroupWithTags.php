@@ -77,11 +77,9 @@ class ProductGroupWithTags extends ProductGroup {
 	 *
 	 * The return from this method will then be sorted and filtered to product the final product list
 	 *
-	 * @param string $extraFilter Additional SQL filters to apply to the Product retrieval
-	 * @param mixed $tagOrTags - can be almost any variable referring to tags
 	 * @return DataObjectSet | Null
 	 **/
-	protected function currentInitialProducts($extraFilter = ''){
+	public function currentInitialProducts($extraFilter = null, $alternativeFilterKey = ''){
 		$this->allProducts = parent::currentInitialProducts();
 		if(!$extraFilter) {
 			$dos = null;
