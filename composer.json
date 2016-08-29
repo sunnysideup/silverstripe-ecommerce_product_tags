@@ -1,22 +1,30 @@
 {
-	"name": "sunnysideup/ecommerce_product_tags",
-	"type": "silverstripe-module",
-	"description": "Tag your silverstripe e-commerce products so that you can search between product categories based on tags (e.g. show me all 'new' products) where 'new' is a tag.",
-	"homepage": "http://www.silverstripe-ecommerce.com",
-	"keywords": ["ecommerce", "e-commerce", "shop", "cart", "product tags", "silverstripe", "tag", "keywords", "keyword"],
-	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
-	"authors":[
-		{
-			"name": "Nicolaas Francken",
-			"homepage": "https://github.com/sunnysideup",
-			"email" : "modules@sunnysideup.co.nz",
-			"role" : "lead developer"
-		}
-	],
-	"require":{
-		"sunnysideup/ecommerce": "dev-master"
-	},
-	"extra": {
-		"installer-name": "ecommerce_product_tags"
-	}
+    "name": "sunnysideup/ecommerce_product_tags",
+    "type": "silverstripe-module",
+    "description": "Tag your silverstripe e-commerce products so that you can search between product categories based on tags (e.g. show me all 'new' products) where 'new' is a tag.",
+    "keywords": [
+        "ecommerce",
+        "e-commerce",
+        "shop",
+        "cart",
+        "product tags",
+        "silverstripe",
+        "tag",
+        "keywords",
+        "keyword"
+    ],
+    "license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+    "authors": [
+        {
+            "name": "Nicolaas Francken",
+            "email": "modules@sunnysideup.co.nz",
+            "role": "lead developer"
+        }
+    ],
+    "require": {
+        "sunnysideup/ecommerce": "dev-master"
+    },
+    "extra": {
+        "installer-name": "ecommerce_product_tags"
+    }
 }
