@@ -3,12 +3,14 @@
     "type": "silverstripe-module",
     "description": "Tag your silverstripe e-commerce products so that you can search between product categories based on tags (e.g. show me all 'new' products) where 'new' is a tag.",
     "keywords": [
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
         "ecommerce",
         "e-commerce",
         "shop",
         "cart",
         "product tags",
-        "silverstripe",
         "tag",
         "keywords",
         "keyword"
@@ -22,7 +24,9 @@
         }
     ],
     "require": {
-        "sunnysideup/ecommerce": "dev-master"
+        "sunnysideup/ecommerce": "*",
+        "silverstripe/framework": "~3.1",
+        "silverstripe/cms": "~3.1"
     },
     "extra": {
         "installer-name": "ecommerce_product_tags"

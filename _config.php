@@ -7,8 +7,8 @@
 # ADD TO ECOMMERCE.YAML:
 
 ProductsAndGroupsModelAdmin:
-	managed_modules: [
-		...
-		EcommerceProductTag
-	]
+    managed_modules: [
+        ...
+        EcommerceProductTag
+    ]
 */
