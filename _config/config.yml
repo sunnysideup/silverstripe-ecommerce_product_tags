@@ -1,3 +1,2 @@
 Product:
-  extensions:
-    - EcommerceProductTagProductDecorator
+    extensions: [EcommerceProductTagProductDecorator]
